@@ -1,0 +1,28 @@
+version: "3.9"
+services:
+  seo-scraper:
+    build: .
+    image: seo-extractor:latest
+    container_name: seo-extractor
+    environment:
+      - CHROME_BIN=/usr/bin/chromium
+      - CHROMEDRIVER=/usr/bin/chromedriver
+    volumes:
+      - ./urls.txt:/app/urls.txt:ro
+      - ./data:/app/data
+    # Disable seccomp default to allow Chromium sandbox in some environments; usually not required
+    # security_opt:
+    #   - seccomp=unconfined
+    command:
+      [
+        "--input",
+        "/app/urls.txt",
+        "--output",
+        "/app/data/results.csv",
+        "--json",
+        "/app/data/results.json",
+        "--screenshots-dir",
+        "/app/data/screenshots",
+        "--delay",
+        "2.0",
+      ]
